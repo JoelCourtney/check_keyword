@@ -13,7 +13,7 @@
 //! # Examples
 //!
 //! ```
-//! use keywords::Keywords;
+//! use check_keyword::CheckKeyword;
 //! let keyword = "match";
 //!
 //! assert!(keyword.is_keyword());
@@ -39,7 +39,7 @@ mod strings;
 
 #[macro_use] mod arr_macro;
 
-pub trait Keywords {
+pub trait CheckKeyword {
     /// The type returned by [to_safe](Keywords::to_safe) and [into_safe](Keywords::into_safe). Currently this is [String]
     /// for both the [String] and [&str] implementations, but future implementations might not return
     /// Strings.

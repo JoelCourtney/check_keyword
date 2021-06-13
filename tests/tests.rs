@@ -1,4 +1,4 @@
-use keywords::Keywords;
+use check_keyword::CheckKeyword;
 
 #[test]
 fn interface() {

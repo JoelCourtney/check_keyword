@@ -1,6 +1,6 @@
 use super::*;
 
-impl Keywords for String {
+impl CheckKeyword for String {
     type SafeOutput = Self;
 
     fn is_keyword(&self) -> bool {
@@ -24,7 +24,7 @@ impl Keywords for String {
     }
 }
 
-impl Keywords for &str {
+impl CheckKeyword for &str {
     type SafeOutput = String;
 
     fn is_keyword(&self) -> bool {
