@@ -1,6 +1,6 @@
 [package]
 name = "check_keyword"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Joel Courtney <joel.e.courtney@gmail.com>"]
 edition = "2018"
 description = "A trait for Strings and &str's to check if a string is a reserved keyword and convert it to a safe non-keyword if so."

@@ -7,7 +7,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! check_keyword = "0.1.0"
+//! check_keyword = "0.1.1"
 //! ```
 //!
 //! # Examples
@@ -30,7 +30,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! check_keyword = { version = "0.1.0", default-features = false }
+//! check_keyword = { version = "0.1.1", default-features = false }
 //! ```
 //!
 //! Future Rust editions may add new keywords, and this crate will be updated to reflect that.
