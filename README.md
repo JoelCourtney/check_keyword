@@ -1,4 +1,4 @@
-# keywords
+# check_keyword
 
 A trait for Strings and &str's to check if a string is a reserved keyword,
 and convert it to a safe non-keyword if so.
@@ -15,7 +15,7 @@ keywords = "0.1.0"
 ## Examples
 
 ```rust
-use keywords::Keywords;
+use check_keyword::CheckKeyword;
 let keyword = "match";
 
 assert!(keyword.is_keyword());
