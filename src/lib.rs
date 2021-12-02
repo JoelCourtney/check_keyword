@@ -1,4 +1,4 @@
-//! A trait for Strings and &str's to check if a string is a reserved keyword,
+//! A trait for String-like types to check if a string is a reserved keyword,
 //! and convert it to a safe non-keyword if so.
 //!
 //! Only strict and reserved keywords are checked against; weak keywords are not included.
@@ -7,21 +7,32 @@
 //!
 //! ```toml
 //! [dependencies]
-//! check_keyword = "0.1.1"
+//! check_keyword = "0.2"
 //! ```
 //!
-//! # Examples
+//! # Example
 //!
 //! ```
 //! use check_keyword::CheckKeyword;
 //! let keyword = "match";
 //!
 //! assert!(keyword.is_keyword());
-//! assert_eq!(keyword.to_safe(), "r#match");
-//!
-//! // There's also a self-consuming version if you want
 //! assert_eq!(keyword.into_safe(), "r#match");
 //! ```
+//! 
+//! The [CheckKeyword::into_safe] method automatically checks [CheckKeyword::is_keyword] for you.
+//! You don't need to call [CheckKeyword::is_keyword]
+//! if you don't care whether it was originally a keyword or not.
+//! 
+//! # Implementations
+//! 
+//! There is a special implementation of `CheckKeyword<String>` for [&str], and a
+//! blanket implementation of `CheckKeyword<T>` where `T: AsRef<str> + From<String>`.
+//! 
+//! The blanket implementation covers [String], and is only tested for that, but should
+//! cover any other String-like type as well. I can try to broaden the definition to fit
+//! other types if needed (open an issue).
+//! 
 //!
 //! # Rust Editions
 //!
@@ -30,30 +41,30 @@
 //!
 //! ```toml
 //! [dependencies]
-//! check_keyword = { version = "0.1.1", default-features = false }
+//! check_keyword = { version = "0.2", default-features = false }
 //! ```
 //!
 //! Future Rust editions may add new keywords, and this crate will be updated to reflect that.
 //! (Or you can create an issue on github if I don't.)
-mod strings;
+mod impls;
 
 #[macro_use] mod arr_macro;
 
-pub trait CheckKeyword {
-    /// The type returned by [to_safe](Keywords::to_safe) and [into_safe](Keywords::into_safe). Currently this is [String]
-    /// for both the [String] and [&str] implementations, but future implementations might not return
-    /// Strings.
-    type SafeOutput;
-
+/// The main trait.
+/// 
+/// The generic argument `T` is the output type of `into_safe`, and in the blanket implementation
+/// is equal to `Self`. I would have used an associated type,
+/// but I ran into the good-old "upstream crates may add new impl of trait" error when implementing [str].
+pub trait CheckKeyword<T> {
     /// Checks if `self` is a keyword.
     fn is_keyword(&self) -> bool;
 
-    /// Creates a new instance of [SafeOutput](Self::SafeOutput). If it is not a keyword, the contents are unchanged.
-    /// If is is a keyword, "r#" is prepended to it.
-    fn to_safe(&self) -> Self::SafeOutput;
-
-    /// Identical to [to_safe](Keywords::to_safe), but it consumes `self`.
-    fn into_safe(self) -> Self::SafeOutput;
+    /// If its a keyword, add "r#" to the beginning.
+    /// 
+    /// This function consumes self, so that if it is not a keyword,
+    /// it can return quickly without cloning. If you want to keep ownership
+    /// of the original data, clone it first.
+    fn into_safe(self) -> T;
 }
 
 arr!(static KEYWORDS: [&'static str; _] = [
