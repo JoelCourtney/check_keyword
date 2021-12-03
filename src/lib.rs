@@ -33,7 +33,6 @@
 //! cover any other String-like type as well. I can try to broaden the definition to fit
 //! other types if needed (open an issue).
 //! 
-//!
 //! # Rust Editions
 //!
 //! By default, the keywords added in Rust Edition 2018 are included in the list of checked keywords.
@@ -140,6 +139,6 @@ mod tests {
 
     #[test]
     fn array_length() {
-        println!("{}", KEYWORDS.len());
+        println!("Number of keywords: {}", KEYWORDS.len());
     }
 }
