@@ -1,7 +1,7 @@
-//! A trait for String-like types to check if a string is a reserved keyword,
-//! and convert it to a safe non-keyword if so.
-//!
-//! Only strict and reserved keywords are checked against; weak keywords are not included.
+//! A trait for String-like types to check if a string is a keyword,
+//! and convert it to a safe non-keyword if so. All types of keywords are supported,
+//! and compile features can be used to check against past rust editions.
+//! (Default is Rust 2021.)
 //!
 //! This library assumes the strings being checked are already valid identifiers in
 //! every way *except* that it might be a reserved keyword.
@@ -10,7 +10,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! check_keyword = "0.3"
+//! check_keyword = "0.3.1"
 //! ```
 //!
 //! # Example
@@ -27,6 +27,9 @@
 //! The [CheckKeyword::into_safe] method automatically checks [CheckKeyword::is_keyword] for you.
 //! You don't need to call [CheckKeyword::is_keyword]
 //! if you don't care whether it was originally a keyword or not.
+//!
+//! [CheckKeyword::is_keyword] only checks for strict and reserved keywords. For more detail, and support
+//! for weak keywords, use [CheckKeyword::keyword_status].
 //!
 //! # Implementors
 //!
@@ -45,7 +48,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! check_keyword = { version = "0.3", default-features = false }
+//! check_keyword = { version = "0.3.1", default-features = false }
 //! ```
 //!
 //! This crate is up-to-date with Rust 2021. Future Rust editions may add new keywords, and this
