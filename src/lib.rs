@@ -10,7 +10,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! check_keyword = "0.2"
+//! check_keyword = "0.3"
 //! ```
 //!
 //! # Example
@@ -28,20 +28,16 @@
 //! You don't need to call [CheckKeyword::is_keyword]
 //! if you don't care whether it was originally a keyword or not.
 //!
+//! # Implementors
+//!
+//! This trait has a blanket implementation for all types that implement `AsRef<str>`. This includes
+//! `&str` and `String`.
+//!
 //! # Raw Identifiers
 //!
 //! Raw identifiers are identifiers that start with `r#`, and most keywords are allowed
 //! to be used as raw identifiers.
 //!
-//! # Implementations
-//! 
-//! There is a special implementation of `CheckKeyword<String>` for [&str], and a
-//! blanket implementation of `CheckKeyword<T>` where `T: AsRef<str> + From<String>`.
-//! 
-//! The blanket implementation covers [String], and is only tested for that, but should
-//! cover any other String-like type as well. I can try to broaden the definition to fit
-//! other types if needed (open an issue).
-//! 
 //! # Rust Editions
 //!
 //! By default, the keywords added in Rust Edition 2018 are included in the list of checked keywords.
@@ -49,22 +45,23 @@
 //!
 //! ```toml
 //! [dependencies]
-//! check_keyword = { version = "0.2", default-features = false }
+//! check_keyword = { version = "0.3", default-features = false }
 //! ```
 //!
-//! Future Rust editions may add new keywords, and this crate will be updated to reflect that.
-//! (Or you can create an issue on github if I don't.)
+//! This crate is up-to-date with Rust 2021. Future Rust editions may add new keywords, and this
+//! crate will be updated to reflect that.
+//! (Or you can create an issue on github if I forget.)
 
 use phf::phf_map;
 
-/// The main trait.
-/// 
-/// The generic argument `T` is the output type of `into_safe`, and in the blanket implementation
-/// is equal to `Self`. I would have used an associated type,
-/// but I ran into the good-old "upstream crates may add new impl of trait" error when implementing [str].
+/// A trait for checking if `self` is a keyword.
 pub trait CheckKeyword {
+    /// Check if `self` is a strict or reserved keyword.
+    ///
+    /// If you want to check weak keywords, use [CheckKeyword::keyword_status].
     fn is_keyword(&self) -> bool;
 
+    /// Returns a detailed description of the type of keyword.
     fn keyword_status(&self) -> KeywordStatus;
 
     /// If it is a keyword, add "r#" to the beginning if possible,
@@ -72,22 +69,45 @@ pub trait CheckKeyword {
     fn into_safe(self) -> String;
 }
 
+/// Detailed information about keywords.
 #[derive(Copy, Clone, Eq, PartialEq, Debug)]
 pub enum KeywordStatus {
+    /// The input was not any kind of keyword.
     NotKeyword,
+
+    /// Strict keywords are always invalid identifiers.
     Strict {
+        /// Whether this keyword can be converted to a valid identifier
+        /// by prepending "r#".
         can_be_raw: bool
     },
+
+    /// Reserved keywords are always invalid identifiers,
+    /// but are not currently used within Rust.
     Reserved,
+
+    /// Weak keywords are only keywords in certain contexts.
+    ///
+    /// Some weak keywords, such as `union` or `macro_rules`,
+    /// are technically keywords but can still be used in all
+    /// contexts.
     Weak {
+        /// The restriction where the keyword cannot be used.
         restriction: WeakRestriction
     }
 }
 
+/// Restricted contexts where a weak keyword cannot be used.
 #[derive(Copy, Clone, Eq, PartialEq, Debug)]
 pub enum WeakRestriction {
+    /// The keyword can be used anywhere that permits an identifier.
     None,
-    Lifetime,
+
+    /// The keyword cannot be used as lifetime or loop label.
+    LifetimeOrLoop,
+
+    /// The keyword is `dyn`. In 2015 edition, `dyn` cannot be used
+    /// in type position followed by a path that does not start with `::`.
     Dyn
 }
 
@@ -170,7 +190,7 @@ static KEYWORDS: phf::Map<&'static str, KeywordStatus> = phf_map! {
 
     "macro_rules" => Weak { restriction: None },
     "union" => Weak { restriction: None },
-    "'static" => Weak { restriction: Lifetime }
+    "'static" => Weak { restriction: LifetimeOrLoop }
 };
 
 impl<T: AsRef<str>> CheckKeyword for T {
@@ -188,7 +208,7 @@ impl<T: AsRef<str>> CheckKeyword for T {
     fn into_safe(self) -> String {
         let self_ref = self.as_ref();
         match self.keyword_status() {
-            Strict { can_be_raw: false } | Weak { restriction: Lifetime } => format!("{self_ref}_"),
+            Strict { can_be_raw: false } | Weak { restriction: LifetimeOrLoop } => format!("{self_ref}_"),
             Strict { .. } | Reserved | Weak { restriction: Dyn } => format!("r#{self_ref}"),
             _ => self_ref.to_string()
         }
@@ -224,7 +244,7 @@ mod tests {
 
         assert_eq!(
             "'static".keyword_status(),
-            Weak { restriction: Lifetime }
+            Weak { restriction: LifetimeOrLoop }
         );
     }
 
