@@ -195,10 +195,7 @@ static KEYWORDS: phf::Map<&'static str, KeywordStatus> = phf_map! {
 
 impl<T: AsRef<str>> CheckKeyword for T {
     fn is_keyword(&self) -> bool {
-        match self.keyword_status() {
-            Strict { .. } | Reserved => true,
-            _ => false,
-        }
+        matches!(self.keyword_status(), Strict { .. } | Reserved)
     }
 
     fn keyword_status(&self) -> KeywordStatus {
