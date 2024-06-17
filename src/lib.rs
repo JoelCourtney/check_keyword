@@ -23,7 +23,7 @@
 //! assert!("match".is_keyword());
 //! assert_eq!("match".into_safe(), "r#match");
 //! ```
-//! 
+//!
 //! The [CheckKeyword::into_safe] method automatically checks [CheckKeyword::is_keyword] for you.
 //! You don't need to call [CheckKeyword::is_keyword]
 //! if you don't care whether it was originally a keyword or not.
@@ -79,7 +79,7 @@ pub enum KeywordStatus {
     Strict {
         /// Whether this keyword can be converted to a valid identifier
         /// by prepending "r#".
-        can_be_raw: bool
+        can_be_raw: bool,
     },
 
     /// Reserved keywords are always invalid identifiers,
@@ -93,8 +93,8 @@ pub enum KeywordStatus {
     /// contexts.
     Weak {
         /// The restriction where the keyword cannot be used.
-        restriction: WeakRestriction
-    }
+        restriction: WeakRestriction,
+    },
 }
 
 /// Restricted contexts where a weak keyword cannot be used.
@@ -108,7 +108,7 @@ pub enum WeakRestriction {
 
     /// The keyword is `dyn`. In 2015 edition, `dyn` cannot be used
     /// in type position followed by a path that does not start with `::`.
-    Dyn
+    Dyn,
 }
 
 use KeywordStatus::*;
@@ -197,7 +197,7 @@ impl<T: AsRef<str>> CheckKeyword for T {
     fn is_keyword(&self) -> bool {
         match self.keyword_status() {
             Strict { .. } | Reserved => true,
-            _ => false
+            _ => false,
         }
     }
 
@@ -208,9 +208,12 @@ impl<T: AsRef<str>> CheckKeyword for T {
     fn into_safe(self) -> String {
         let self_ref = self.as_ref();
         match self.keyword_status() {
-            Strict { can_be_raw: false } | Weak { restriction: LifetimeOrLoop } => format!("{self_ref}_"),
+            Strict { can_be_raw: false }
+            | Weak {
+                restriction: LifetimeOrLoop,
+            } => format!("{self_ref}_"),
             Strict { .. } | Reserved | Weak { restriction: Dyn } => format!("r#{self_ref}"),
-            _ => self_ref.to_string()
+            _ => self_ref.to_string(),
         }
     }
 }
@@ -244,7 +247,9 @@ mod tests {
 
         assert_eq!(
             "'static".keyword_status(),
-            Weak { restriction: LifetimeOrLoop }
+            Weak {
+                restriction: LifetimeOrLoop
+            }
         );
     }
 
@@ -253,12 +258,13 @@ mod tests {
         assert_eq!(String::from("match").into_safe(), "r#match");
         assert_eq!("asdf".into_safe(), "asdf");
 
-        assert_eq!("await".into_safe(),
-                   if cfg!(feature = "2018") {
-                       "r#await"
-                   } else {
-                       "await"
-                   }
+        assert_eq!(
+            "await".into_safe(),
+            if cfg!(feature = "2018") {
+                "r#await"
+            } else {
+                "await"
+            }
         );
 
         assert_eq!("self".into_safe(), "self_");
