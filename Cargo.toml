@@ -1,13 +1,14 @@
 [package]
 name = "check_keyword"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["Joel Courtney <joel.e.courtney@gmail.com>"]
 edition = "2021"
-description = "A trait for String-like types to check if it is a reserved keyword and convert it to a safe non-keyword if so."
+description = "A trait for String-like types to check if it is a keyword and convert it to a safe non-keyword if so."
 readme = "README.md"
 repository = "https://github.com/JoelCourtney/check_keyword"
 license = "MIT OR Apache-2.0"
-keywords = ["keyword", "reserved", "string"]
+keywords = ["keyword", "string"]
+categories = ["development-tools::procedural-macro-helpers"]
 
 [lib]
 proc-macro = false
