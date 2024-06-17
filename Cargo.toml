@@ -13,6 +13,10 @@ keywords = ["keyword", "reserved", "string"]
 proc-macro = false
 path = "src/lib.rs"
 
+[dependencies]
+phf = { version = "0.11", features = ["macros"] }
+
 [features]
-default = ["2018"]
+default = ["2021"]
+2021 = ["2018"]
 2018 = []
