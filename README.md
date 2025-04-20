@@ -3,7 +3,7 @@
 A trait for String-like types to check if a string is a keyword,
 and convert it to a safe non-keyword if so. All types of keywords are supported,
 and compile features can be used to check against past rust editions.
-(Default is Rust 2021.)
+(Default is Rust 2024.)
 
 This library assumes the strings being checked are already valid identifiers in
 every way *except* that it might be a reserved keyword.
@@ -44,15 +44,15 @@ to be used as raw identifiers.
 
 ## Rust Editions
 
-By default, the keywords added in Rust Edition 2018 are included in the list of checked keywords.
-This can be disabled with `default-features = false` in your Cargo.toml.
+By default, all keywords in Rust 2024 are included.
+This can be disabled with `default-features = false` and selecting an earlier edition in your Cargo.toml.
 
 ```toml
 [dependencies]
-check_keyword = { version = "0.3.1", default-features = false }
+check_keyword = { version = "0.3.1", default-features = false, features = [ "2021" ] }
 ```
 
-This crate is up-to-date with Rust 2021. Future Rust editions may add new keywords, and this
+This crate is up-to-date with Rust 2024. Future Rust editions may add new keywords, and this
 crate will be updated to reflect that.
 (Or you can create an issue on github if I forget.)
 

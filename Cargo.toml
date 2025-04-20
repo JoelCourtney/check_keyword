@@ -1,8 +1,8 @@
 [package]
 name = "check_keyword"
-version = "0.3.1"
+version = "0.4.0"
 authors = ["Joel Courtney <joel.e.courtney@gmail.com>"]
-edition = "2021"
+edition = "2024"
 description = "A trait for String-like types to check if it is a keyword and convert it to a safe non-keyword if so."
 readme = "README.md"
 repository = "https://github.com/JoelCourtney/check_keyword"
@@ -18,6 +18,7 @@ path = "src/lib.rs"
 phf = { version = "0.11", features = ["macros"] }
 
 [features]
-default = ["2021"]
+default = ["2024"]
+2024 = ["2021"]
 2021 = ["2018"]
 2018 = []

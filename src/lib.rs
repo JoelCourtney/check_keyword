@@ -189,6 +189,9 @@ static KEYWORDS: phf::Map<&'static str, KeywordStatus> = phf_map! {
 
     "try" => if cfg!(feature = "2018") { Reserved } else { NotKeyword },
 
+    // RESERVED, 2024
+    "gen" => if cfg!(feature = "2024") { Reserved } else { NotKeyword },
+
     // WEAK
 
     "macro_rules" => Weak { restriction: None },
@@ -230,6 +233,7 @@ mod tests {
         assert!("crate".is_keyword());
 
         assert_eq!(String::from("async").is_keyword(), cfg!(feature = "2018"));
+        assert_eq!(String::from("gen").is_keyword(), cfg!(feature = "2024"));
     }
 
     #[test]
