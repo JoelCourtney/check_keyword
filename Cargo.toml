@@ -1,6 +1,6 @@
 [package]
 name = "check_keyword"
-version = "0.4.0"
+version = "0.4.1"
 authors = ["Joel Courtney <joel.e.courtney@gmail.com>"]
 edition = "2024"
 description = "A trait for String-like types to check if it is a keyword and convert it to a safe non-keyword if so."

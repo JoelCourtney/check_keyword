@@ -10,7 +10,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! check_keyword = "0.3.1"
+//! check_keyword = "0.4.1"
 //! ```
 //!
 //! # Example
@@ -43,15 +43,15 @@
 //!
 //! # Rust Editions
 //!
-//! By default, the keywords added in Rust Edition 2018 are included in the list of checked keywords.
-//! This can be disabled with `default-features = false` in your Cargo.toml.
+//! By default, all keywords in Rust 2024 are included.
+//! This can be disabled with `default-features = false` and selecting an earlier edition in your Cargo.toml.
 //!
 //! ```toml
 //! [dependencies]
-//! check_keyword = { version = "0.3.1", default-features = false }
+//! check_keyword = { version = "0.4.1", default-features = false, features = [ "2021" ] }
 //! ```
 //!
-//! This crate is up-to-date with Rust 2021. Future Rust editions may add new keywords, and this
+//! This crate is up-to-date with Rust 2024. Future Rust editions may add new keywords, and this
 //! crate will be updated to reflect that.
 //! (Or you can create an issue on github if I forget.)
 

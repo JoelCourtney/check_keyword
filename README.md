@@ -12,7 +12,7 @@ You can add this dependency with:
 
 ```toml
 [dependencies]
-check_keyword = "0.3.1"
+check_keyword = "0.4.1"
 ```
 
 ## Example
@@ -49,7 +49,7 @@ This can be disabled with `default-features = false` and selecting an earlier ed
 
 ```toml
 [dependencies]
-check_keyword = { version = "0.3.1", default-features = false, features = [ "2021" ] }
+check_keyword = { version = "0.4.1", default-features = false, features = [ "2021" ] }
 ```
 
 This crate is up-to-date with Rust 2024. Future Rust editions may add new keywords, and this
